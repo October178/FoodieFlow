@@ -11,3 +11,7 @@ sky:
     access-key-id: LTAI5tBv4971rKm3dEYZLurw
     access-key-secret: jCqbva2QG3KMdCR0ybosgWkVXO18UQ
     bucket-name: web-october178
+  redis:
+    host: localhost
+    port: 6379
+    database: 10
