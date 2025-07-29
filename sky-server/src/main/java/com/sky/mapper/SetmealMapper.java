@@ -14,7 +14,6 @@ import java.util.List;
 
 @Mapper
 public interface SetmealMapper {
-
     /**
      * 根据分类id查询套餐的数量
      *
@@ -72,6 +71,14 @@ public interface SetmealMapper {
      * @return
      */
     List<Setmeal> list(Setmeal setmeal);
+
+    /**
+     * 根据菜品id查询套餐
+     * @param id
+     * @return
+     */
+    @Select("select d.* from setmeal d left join setmeal_dish sd on d.id = sd.setmeal_id where dish_id = #{id}")
+    List<Setmeal> getByDishId(Long id);
 
     /**
      * 根据套餐id查询菜品选项
