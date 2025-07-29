@@ -10,7 +10,6 @@ import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.entity.Setmeal;
 import com.sky.exception.DeletionNotAllowedException;
-import com.sky.exception.SetmealEnableFailedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
@@ -21,7 +20,6 @@ import com.sky.vo.DishVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +41,6 @@ public class DishServiceImpl implements DishService {
     /**
      * 新增菜品和对应的口味
      *
-     * @param dishDTO
      */
     @Transactional
     public void saveWithFlavor(DishDTO dishDTO) {
@@ -56,9 +53,7 @@ public class DishServiceImpl implements DishService {
 
         List<DishFlavor> flavors = dishDTO.getFlavors();
         if (flavors != null && flavors.size() > 0) {
-            flavors.forEach(dishflavor -> {
-                dishflavor.setDishId(dishId);
-            });
+            flavors.forEach(dishflavor -> dishflavor.setDishId(dishId));
             //向口味表插入n条数据
             dishFlavorMapper.insertBatch(flavors);
         }
@@ -161,7 +156,9 @@ public class DishServiceImpl implements DishService {
             if (setmeals != null && setmeals.size() > 0) {
                 setmeals.forEach(setmeal -> {
                     if  (StatusConstant.ENABLE == setmeal.getStatus())
-                        throw new SetmealEnableFailedException(MessageConstant.DISH_ENABLE_FAILED);
+                        setmeal.setStatus(StatusConstant.DISABLE);
+                        setmealMapper.update(setmeal);
+                        //throw new SetmealEnableFailedException(MessageConstant.DISH_ENABLE_FAILED);
                 });
             }
         }
