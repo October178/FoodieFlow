@@ -1,11 +1,10 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -77,4 +76,25 @@ public interface OrderMapper {
      * @return
      */
     Double sumByMap(Map map);
+
+    @MapKey("orderDate")
+    // OrderMapper.java
+    List<Map<String, Object>> getDailyTurnovers(@Param("beginTime") LocalDateTime beginTime,
+                                                @Param("endTime") LocalDateTime endTime,
+                                                @Param("status") Integer status);
+
+    /**
+     * 根据动态条件统计订单数量
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
+
+    /**
+     * 统计指定时间区间内的销量排名前10
+     * @param begin
+     * @param end
+     * @return
+     */
+    List<GoodsSalesDTO> getSalesTop10(LocalDateTime begin,LocalDateTime end);
 }

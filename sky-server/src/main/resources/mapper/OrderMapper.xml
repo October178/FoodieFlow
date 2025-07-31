@@ -84,4 +84,48 @@
         </where>
     </select>
 
+    <select id="getDailyTurnovers" resultType="java.util.Map">
+        SELECT
+            DATE(order_time) AS orderDate,
+            SUM(amount) AS dailyTurnover
+        FROM
+            orders
+        WHERE
+            order_time &gt;= #{beginTime} AND order_time &lt;= #{endTime}
+          AND status = #{status}
+        GROUP BY
+            DATE(order_time)
+        ORDER BY
+            orderDate
+    </select>
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from orders
+        <where>
+            <if test="begin != null">
+                and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="getSalesTop10" resultType="com.sky.dto.GoodsSalesDTO">
+        select od.name,sum(od.number) as number
+        from order_detail od,orders o
+        where od.order_id = o.id and status = 5
+        <if test="begin != null">
+            and o.order_time &gt; #{begin}
+        </if>
+        <if test="end != null">
+            and o.order_time &lt; #{end}
+        </if>
+        group by od.name
+        order by number desc
+        limit 0,10
+    </select>
+
+
 </mapper>
